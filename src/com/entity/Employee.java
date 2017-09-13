@@ -34,6 +34,16 @@ public class Employee {
         this.company = company;
     }
 
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", company='" + company + '\'' +
+                '}';
+    }
+
     public int getId() {
         return id;
     }
