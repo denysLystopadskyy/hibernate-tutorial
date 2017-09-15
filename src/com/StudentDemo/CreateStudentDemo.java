@@ -1,4 +1,8 @@
-package com;
+package com.StudentDemo;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -6,7 +10,7 @@ import org.hibernate.cfg.Configuration;
 
 import com.entity.Student;
 
-public class FindStudentByIDDemo {
+public class CreateStudentDemo {
 
     public static void main(String[] args) {
         SessionFactory sessionFactory = new Configuration()
@@ -17,27 +21,18 @@ public class FindStudentByIDDemo {
         Session session = sessionFactory.getCurrentSession();
 
         try {
-            System.out.println("Saving the student.");
-            Student student = new Student("First Name", "Last Name", "found.student@gmail.com");
-
             System.out.println("Creating Student object...");
             session.beginTransaction();
-            session.save(student);
-            session.getTransaction().commit();
 
-            System.out.println("Saving Done! Student Id: " + student.getId() );
-
-            session = sessionFactory.getCurrentSession();
-
-            session.beginTransaction();
-
-            System.out.println("Getting student by id.");
-            Student foundStudent = session.get(Student.class, student.getId());
+            System.out.println("Saving the student.");
+            List<Student> studentList = IntStream.rangeClosed(0, 10)
+                    .mapToObj(i -> new Student("First Name" + i, "Last Name" + i, "first.last" + i + "@gmail.com"))
+                    .peek(session::save).collect(Collectors.toList());
 
             session.getTransaction().commit();
+            session.close();
 
-            System.out.println("Student found: " + student);
-
+            System.out.println("Done!");
 
         } finally {
             sessionFactory.close();

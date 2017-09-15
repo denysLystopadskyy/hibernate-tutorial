@@ -1,8 +1,6 @@
-package com;
+package com.StudentDemo;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,7 +8,7 @@ import org.hibernate.cfg.Configuration;
 
 import com.entity.Student;
 
-public class DeleteStudentDemo {
+public class QueryUpdateStudentDemo {
 
     public static void main(String[] args) {
         SessionFactory sessionFactory = new Configuration()
@@ -21,23 +19,21 @@ public class DeleteStudentDemo {
         Session session = sessionFactory.getCurrentSession();
 
         try {
-            System.out.println("Creating Student object...");
+
             session.beginTransaction();
 
-            System.out.println("Saving the student.");
-            List<Student> studentList = IntStream.rangeClosed(0, 10)
-                    .mapToObj(i -> new Student("First Name" + i, "Last Name" + i, "first.last" + i + "@gmail.com"))
-                    .peek(session::save).collect(Collectors.toList());
-
-            System.out.println(studentList);
+            Student student = session.get(Student.class, 3);
+            System.out.println(student);
+            student.setFirstName("Updated FN");
 
             session.getTransaction().commit();
+
 
             session = sessionFactory.getCurrentSession();
 
             session.beginTransaction();
-
-            studentList.forEach(session::delete);
+            student = session.get(Student.class, 1);
+            System.out.println(student);
 
             session.getTransaction().commit();
 
@@ -46,5 +42,9 @@ public class DeleteStudentDemo {
         } finally {
             sessionFactory.close();
         }
+    }
+
+    private static void printStudents(List<Student> students) {
+        students.forEach(System.out::println);
     }
 }

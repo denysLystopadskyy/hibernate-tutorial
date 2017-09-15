@@ -1,4 +1,4 @@
-package com;
+package com.StudentDemo;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +10,7 @@ import org.hibernate.cfg.Configuration;
 
 import com.entity.Student;
 
-public class CreateStudentDemo {
+public class DeleteStudentDemo {
 
     public static void main(String[] args) {
         SessionFactory sessionFactory = new Configuration()
@@ -29,8 +29,17 @@ public class CreateStudentDemo {
                     .mapToObj(i -> new Student("First Name" + i, "Last Name" + i, "first.last" + i + "@gmail.com"))
                     .peek(session::save).collect(Collectors.toList());
 
+            System.out.println(studentList);
+
             session.getTransaction().commit();
-            session.close();
+
+            session = sessionFactory.getCurrentSession();
+
+            session.beginTransaction();
+
+            studentList.forEach(session::delete);
+
+            session.getTransaction().commit();
 
             System.out.println("Done!");
 
