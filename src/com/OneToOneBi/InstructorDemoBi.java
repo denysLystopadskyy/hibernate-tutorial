@@ -1,23 +1,22 @@
-package com.OneToOneUni;
-
-import javax.persistence.PersistenceException;
+package com.OneToOneBi;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import com.entity.InstructorUni;
-import com.entity.InstructorDetailUni;
+import com.entity.InstructorBi;
+import com.entity.InstructorDetailBi;
 
-public class InstructorDemo {
+public class InstructorDemoBi {
 
     private static SessionFactory sessionFactory;
 
     public static void main(String[] args) {
         try {
-            createInstructor();
-            deleteInstructor();
+//            createInstructor();
+//            deleteInstructor();
             deleteInstructorDetails();
+//            findInstructorDeatil();
         } catch (Exception e) {
             System.out.println("Error: => " + e.getMessage());
             throw e;
@@ -27,41 +26,52 @@ public class InstructorDemo {
 
     }
 
-    private static void deleteInstructor() {
-        InstructorUni instructorUni = createInstructor();
-        System.out.println(instructorUni);
+    private static void findInstructorDeatil() {
+        InstructorBi instructor = createInstructor();
 
         try (Session sessionWithTransaction = getSessionWithTransaction()) {
-            sessionWithTransaction.delete(instructorUni);
+            InstructorDetailBi instructorDetailBi = sessionWithTransaction.find(InstructorDetailBi.class, instructor.getInstructorDetailBi().getId());
+
+            InstructorBi biInstructor = instructorDetailBi.getInstructor();
+            System.out.println(biInstructor);
+        }
+    }
+
+    private static void deleteInstructor() {
+        InstructorBi instructorBi = createInstructor();
+        System.out.println(instructorBi);
+
+        try (Session sessionWithTransaction = getSessionWithTransaction()) {
+            sessionWithTransaction.delete(instructorBi);
             commitTransaction(sessionWithTransaction);
         }
     }
 
     private static void deleteInstructorDetails() {
-        InstructorUni instructorUni = createInstructor();
-        InstructorDetailUni instructorDetailUni = instructorUni.getInstructorDetailUni();
-        System.out.println(instructorDetailUni);
+        InstructorBi instructorBi = createInstructor();
 
         try (Session sessionWithTransaction = getSessionWithTransaction()) {
-            sessionWithTransaction.delete(instructorDetailUni);
+
+            InstructorDetailBi instructorDetailBi = sessionWithTransaction.find(InstructorDetailBi.class, instructorBi.getInstructorDetailBi().getId());
+            System.out.println(instructorDetailBi);
+
+            //breaking Bi Reference
+            instructorDetailBi.getInstructor().setInstructorDetail(null);
+
+            sessionWithTransaction.delete(instructorDetailBi);
+
             commitTransaction(sessionWithTransaction);
-        }catch (Exception e){
-            if (e instanceof PersistenceException){
-                System.out.println("Everything is fine! you can not delete it.");
-            }else {
-                throw e;
-            }
         }
     }
 
-    private static InstructorUni createInstructor() {
+    private static InstructorBi createInstructor() {
         try (Session sessionWithTransaction = getSessionWithTransaction()) {
-            InstructorUni instructorUni = new InstructorUni("Last Name", "First Name", "email@gmail.com");
-            instructorUni.setInstructorDetailUni(new InstructorDetailUni("test@channel.com", "Test Hobby"));
-            sessionWithTransaction.save(instructorUni);
+            InstructorBi instructor = new InstructorBi("Last Name", "First Name", "email@gmail.com");
+            instructor.setInstructorDetail(new InstructorDetailBi("test@channel.com", "Test Hobby"));
+            sessionWithTransaction.save(instructor);
             commitTransaction(sessionWithTransaction);
-            System.out.println(instructorUni);
-            return instructorUni;
+            System.out.println(instructor);
+            return instructor;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw e;
@@ -82,9 +92,9 @@ public class InstructorDemo {
         if (sessionFactory == null) {
             System.out.println("Creating Session Factory");
             sessionFactory = new Configuration()
-                    .configure("hibernateOneToOneUni.cfg.xml")
-                    .addAnnotatedClass(InstructorUni.class)
-                    .addAnnotatedClass(InstructorDetailUni.class)
+                    .configure("hibernateOneToOneBi.cfg.xml")
+                    .addAnnotatedClass(InstructorBi.class)
+                    .addAnnotatedClass(InstructorDetailBi.class)
                     .buildSessionFactory();
         }
         return sessionFactory;

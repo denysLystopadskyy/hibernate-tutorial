@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "instructor_detail")
-public class InstructorDetail {
+public class InstructorDetailUni {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +23,10 @@ public class InstructorDetail {
     private String hobby;
 
 
-    public InstructorDetail() {
+    public InstructorDetailUni() {
     }
 
-    public InstructorDetail(String youtubeChannel, String hobby) {
+    public InstructorDetailUni(String youtubeChannel, String hobby) {
         this.youtubeChannel = youtubeChannel;
         this.hobby = hobby;
     }
@@ -57,7 +57,7 @@ public class InstructorDetail {
 
     @Override
     public String toString() {
-        return "InstructorDetail{" +
+        return "InstructorDetailUni{" +
                 "id=" + id +
                 ", youtubeChannel='" + youtubeChannel + '\'' +
                 ", hobby='" + hobby + '\'' +

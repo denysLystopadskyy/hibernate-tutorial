@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "instructor")
-public class Instructor {
+public class InstructorUni {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,18 +30,18 @@ public class Instructor {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "instructor_detail_id")
-    private InstructorDetail instructorDetail;
+    private InstructorDetailUni instructorDetailUni;
 
     public int getId() {
         return id;
     }
 
-    public InstructorDetail getInstructorDetail() {
-        return instructorDetail;
+    public InstructorDetailUni getInstructorDetailUni() {
+        return instructorDetailUni;
     }
 
-    public void setInstructorDetail(InstructorDetail instructorDetail) {
-        this.instructorDetail = instructorDetail;
+    public void setInstructorDetailUni(InstructorDetailUni instructorDetailUni) {
+        this.instructorDetailUni = instructorDetailUni;
     }
 
     public void setId(int id) {
@@ -73,14 +73,25 @@ public class Instructor {
         this.email = email;
     }
 
-    public Instructor(String lastName, String firstName, String email) {
+    public InstructorUni(String lastName, String firstName, String email) {
 
         this.lastName = lastName;
         this.firstName = firstName;
         this.email = email;
     }
 
-    public Instructor() {
+    public InstructorUni() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "InstructorUni{" +
+                "id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", email='" + email + '\'' +
+                ", instructorDetailUni=" + instructorDetailUni +
+                '}';
     }
 }
